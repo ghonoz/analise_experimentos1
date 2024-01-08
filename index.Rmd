@@ -101,4 +101,4 @@ summary(teste)
 
 ```
 
-Podemos ver que os valores são iguais (diferença mínima por aproximação). Portanto, a fórmula está correta.
+Podemos ver que os valores são iguais (diferença mínima por aproximação). Portanto, a fórmula está correta.'
