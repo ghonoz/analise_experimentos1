@@ -1,0 +1,104 @@
+---
+title: "Tarefa ANOVA"
+author: "Gabriel Lopes Rubinho"
+date: '08-01-2024'
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    theme: united
+    highlight: tango
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Comparando o F pela função `aov` do R com a fórmula
+
+# Fórmula para $F_{0}$
+
+A fórmula de F pode ser escrita como 
+$$F_{0} = \frac{MS_{treatments}}{MS_{E}}$$ onde $$MS_{treatments} = \frac{SS_{treatments}}{a-1}$$ e $$MS_{E} = \frac{SS_{E}}{N-a}$$, onde $a$ é o número de fatores, e N é o número total de observações.
+Além disso, $$SS_{e} = \sum_{i=1}^{a}\sum_{j=1}^{n}(y_{ij} - \bar{y_{..}})^{2}$$ e $$SS_{treatments} = n\sum_{i=1}^{a}(\bar{y_{i.}} - \bar{y_{..}})^{2}$$
+
+$y_{..}$ pode ser entendido como a soma geral de todos os valores, $y_{i.}$ a soma de todos os valores em determinado fator $i$, $n$ o total de elementos em cada fator.
+
+# Inserindo os valores no R
+Não será feita as contas de maneira manual, ou seja, serão executadas no R. Primeiramente, definimos um dataframe com os dados fornecidos no exercício.
+
+``` {r}
+power <- as.factor(sort(rep(seq(160, 220, 20), times = 5)))
+obs <- c(575, 542, 530, 539, 570, 565, 593, 590, 579, 610, 600, 651, 610, 637, 629, 725, 700, 715, 685, 710)
+df <- data.frame(obs, power)
+df
+```
+
+# Gráfico dos resultados por fator
+
+``` {r}
+
+plot(obs ~ power, data = df)
+
+```
+
+# Calculando as estatísticas para fatores
+
+Através do `dplyr`, podemos utilizar funções que nos agilizam em retirar estatísticas referentes a cada um dos fatores.
+
+``` {r, warning = FALSE, message = FALSE}
+library(dplyr)
+
+stat <- df %>%
+  group_by(power) %>%
+  summarise(media = mean(obs),
+            variancia = var(obs),
+            total = sum(obs))
+stat
+
+```
+ 
+ 
+
+ 
+Temos que o total de elementos por fator é $n = 5$. Resolvendo todos, teremos o seguinte código:
+```{r}
+
+n <- 5
+y__ <- sum(df$obs)
+y__mean <- y__/nrow(df)
+
+SS_treatments <- n*sum((stat$media - y__mean)^2)
+MS_treatments <- SS_treatments/3
+
+SS_t <- sum(df$obs^2) - ((sum(stat$total))^2)/nrow(df)
+
+SS_e <- SS_t - SS_treatments
+
+MS_e <- SS_e/(nrow(df)-4)
+
+
+MS_treatments
+MS_e
+
+```
+ 
+Portanto, $MS_{treatments} = 22290.18$ e $MS_{E} = 333.7$
+
+Logo, $F_{0} = \frac{MS_{treatments}}{MS_E} = \frac{22290.18}{333.7} = 66.79706$ 
+
+# Analisando pela função `aov`
+ 
+ 
+ 
+
+``` {r}
+teste <- aov(obs ~ power, data = df)
+summary(teste)
+
+```
+
+Podemos ver que os valores são iguais (diferença mínima por aproximação). Portanto, a fórmula está correta.
