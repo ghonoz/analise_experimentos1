@@ -1,7 +1,7 @@
 ---
 title: "Tarefa ANOVA"
 author: "Gabriel Lopes Rubinho"
-date: '08-01-2024'
+date: '17-01-2024'
 output: 
   html_document:
     toc: true
@@ -17,35 +17,68 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Comparando o F pela função `aov` do R com a fórmula
+## Aplicação do teste de Levene Modificado
+Primeiramente, será feita uma introdução do que se é o teste de Levene Modificado.
 
-# Fórmula para $F_{0}$
+Em Análise de Variância, se é de interesse que as variâncias sejam as homoscedásticas, ou seja, que os resíduos não cresçam conforme se aumenta o valor predito ($\hat{y_{ij}} = \bar{y_{i.}}$). Um dos testes para verificar se as variâncias são iguais, ou se há diferença entre um dos grupos, é o teste de Barlett, com as hipóteses
+
+
+\[
+\begin{aligned}
+& H_0: \sigma_{1}^{2} = \sigma_{2}^2 = ... = \sigma_{a}^2\\
+& H_a: \text{Há pelo menos uma variância que não seja igual a outra}
+\end{aligned}
+\]
+
+No entanto, as amostras dos grupos devem seguir distribuição normal e, para esse teste, é um pressuposto crítico. No caso, o teste de Levene ignora esse pressuposto, e é uma alternativa no caso de não haver normalidade.
+
+No caso, precisaremos transformar os dados, na seguinte maneira:
+
+$d_{ij} = |y_{ij} - \tilde{y_{i}}|$, onde $i = 1, 2, ..., a$, e $j = 1, 2, ..., n_{i}$, onde $a$ é o número de grupos, $n_{i}$ o tamanho de amostras para determinado grupo i, e $\tilde{y_{i}}$ é a mediana do tratamento i.
+
+
+## Exemplo 3.5
+
+Não será construída a tabela por questões de praticidade, mas os valores serão colocados em código. 
+
+
+
+``` {r}
+
+estimation_method1 <- c(0.34, 0.12, 1.23, 0.7, 1.75, .12)
+median_method1 <- median(estimation_method1)
+estimation_method2 <- c(0.91, 2.94, 2.14, 2.36, 2.86, 4.55)
+median_method2 <- median(estimation_method2)
+
+estimation_method3 <-  c(6.31, 8.37, 9.75, 6.09, 9.82, 7.24)
+median_method3 <- median(estimation_method3)
+
+estimation_method4 <- c(17.15, 11.82, 10.95, 17.2, 14.35, 16.82)
+median_method4 <- median(estimation_method4)
+
+estimation_method1_levene <- abs(estimation_method1 - median_method1)
+estimation_method2_levene <- abs(estimation_method2 - median_method2)
+estimation_method3_levene <- abs(estimation_method3 - median_method3)
+estimation_method4_levene <- abs(estimation_method4 - median_method4)
+
+obs <- c(estimation_method1_levene, estimation_method2_levene, estimation_method3_levene, estimation_method4_levene)
+
+estimation_method <- as.factor(sort(rep(seq(1, 4, 1), times = 6)))
+df <- data.frame(estimation_method, obs)
+df
+```
+
+Temos que o total de elemento por fator é 5. Vamos aplicar o teste F:
 
 A fórmula de F pode ser escrita como 
 $$F_{0} = \frac{MS_{treatments}}{MS_{E}}$$ onde $$MS_{treatments} = \frac{SS_{treatments}}{a-1}$$ e $$MS_{E} = \frac{SS_{E}}{N-a}$$, onde $a$ é o número de fatores, e N é o número total de observações.
 Além disso, $$SS_{e} = \sum_{i=1}^{a}\sum_{j=1}^{n}(y_{ij} - \bar{y_{..}})^{2}$$ e $$SS_{treatments} = n\sum_{i=1}^{a}(\bar{y_{i.}} - \bar{y_{..}})^{2}$$
-
-$y_{..}$ pode ser entendido como a soma geral de todos os valores, $y_{i.}$ a soma de todos os valores em determinado fator $i$, $n$ o total de elementos em cada fator.
-
-# Inserindo os valores no R
-Não será feita as contas de maneira manual, ou seja, serão executadas no R. Primeiramente, definimos um dataframe com os dados fornecidos no exercício.
-
-``` {r}
-power <- as.factor(sort(rep(seq(160, 220, 20), times = 5)))
-obs <- c(575, 542, 530, 539, 570, 565, 593, 590, 579, 610, 600, 651, 610, 637, 629, 725, 700, 715, 685, 710)
-df <- data.frame(obs, power)
-df
+ $y_{..}$ pode ser entendido como a soma geral de todos os valores, $y_{i.}$ a soma de todos os valores em determinado fator $i$, $n$ o total de elementos em cada fator.
+ 
+```{r}
+plot(obs~estimation_method, data = df)
 ```
 
-# Gráfico dos resultados por fator
-
-``` {r}
-
-plot(obs ~ power, data = df)
-
-```
-
-# Calculando as estatísticas para fatores
 
 Através do `dplyr`, podemos utilizar funções que nos agilizam em retirar estatísticas referentes a cada um dos fatores.
 
@@ -53,21 +86,17 @@ Através do `dplyr`, podemos utilizar funções que nos agilizam em retirar esta
 library(dplyr)
 
 stat <- df %>%
-  group_by(power) %>%
+  group_by(estimation_method) %>%
   summarise(media = mean(obs),
             variancia = var(obs),
             total = sum(obs))
 stat
 
 ```
- 
- 
+O total de elemento por fator é $n=6$.
 
- 
-Temos que o total de elementos por fator é $n = 5$. Resolvendo todos, teremos o seguinte código:
 ```{r}
-
-n <- 5
+n <- 6
 y__ <- sum(df$obs)
 y__mean <- y__/nrow(df)
 
@@ -84,21 +113,19 @@ MS_e <- SS_e/(nrow(df)-4)
 MS_treatments
 MS_e
 
-```
- 
-Portanto, $MS_{treatments} = 22290.18$ e $MS_{E} = 333.7$
 
-Logo, $F_{0} = \frac{MS_{treatments}}{MS_E} = \frac{22290.18}{333.7} = 66.79706$ 
-
-# Analisando pela função `aov`
- 
- 
- 
-
-``` {r}
-teste <- aov(obs ~ power, data = df)
-summary(teste)
 
 ```
+Portanto, $MS_{treatments} = 3.85656$ e $MS_{E} = 0.8441742$. 
 
-Podemos ver que os valores são iguais (diferença mínima por aproximação). Portanto, a fórmula está correta.'
+Do teste, $F_{0} = \frac{3.85656}{0.8441742} = 4.568441$
+
+Rejeitamos $H_{0}$ e concluímos que há evidências de que pelo menos uma das variâncias é diferente se 
+
+\begin{center}
+$F_{0} > F_{\alpha, a-1, N-a}$
+\end{center}
+
+No nosso caso, $F_{\alpha, a-1, N-a} = F_{0.05, 3, 20} = 3.10$ 
+
+Como $F_{0} = 4.568441 > F_{0.05, 3, 20} = 3.10$, rejeitamos a hipótese nula de que as variâncias são homogêneas. 
