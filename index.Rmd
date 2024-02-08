@@ -1,7 +1,8 @@
 ---
-title: "Tarefa ANOVA"
+title: "Planejamento de Experimentos - I"
 author: "Gabriel Lopes Rubinho"
-date: '17-01-2024'
+date: '07-02-2024'
+lang: pt
 output: 
   html_document:
     toc: true
@@ -17,91 +18,42 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Aplicação do teste de Levene Modificado
-Primeiramente, será feita uma introdução do que se é o teste de Levene Modificado.
+# Comparações múltiplas - Exemplo 3.1
 
-Em Análise de Variância, se é de interesse que as variâncias sejam as homoscedásticas, ou seja, que os resíduos não cresçam conforme se aumenta o valor predito ($\hat{y_{ij}} = \bar{y_{i.}}$). Um dos testes para verificar se as variâncias são iguais, ou se há diferença entre um dos grupos, é o teste de Barlett, com as hipóteses
+## Método de Scheffé
 
+Supondo que $\Gamma_{1} = \mu_{1} + \mu_{2} - \mu_{3} - \mu_{4}$ e $\Gamma_{2} = \mu_{1}-\mu_{4}$ sejam os contrastes de interesse.
 
-\[
-\begin{aligned}
-& H_0: \sigma_{1}^{2} = \sigma_{2}^2 = ... = \sigma_{a}^2\\
-& H_a: \text{Há pelo menos uma variância que não seja igual a outra}
-\end{aligned}
-\]
+Os valores numéricos $C_{1} = \bar{y_{1.}} + \bar{y_{2.}}-\bar{y_{3.}}-\bar{y_{4.}}$ e $C_{2} = \bar{y_{1.}} - \bar{y_{4.}}$ são dados pela própria tabela, os quais nos resulta em 
 
-No entanto, as amostras dos grupos devem seguir distribuição normal e, para esse teste, é um pressuposto crítico. No caso, o teste de Levene ignora esse pressuposto, e é uma alternativa no caso de não haver normalidade.
-
-No caso, precisaremos transformar os dados, na seguinte maneira:
-
-$d_{ij} = |y_{ij} - \tilde{y_{i}}|$, onde $i = 1, 2, ..., a$, e $j = 1, 2, ..., n_{i}$, onde $a$ é o número de grupos, $n_{i}$ o tamanho de amostras para determinado grupo i, e $\tilde{y_{i}}$ é a mediana do tratamento i.
+$C_{1} = 551,2 + 587,4 - 625,4 - 707 = -193,8$ e 
+$C_{2} = 551,2 - 707 = -155,8$
 
 
-## Exemplo 3.5
+Precisaremos, primeiramente, calcular o MSE. 
 
-Não será construída a tabela por questões de praticidade, mas os valores serão colocados em código. 
-
-
-
-``` {r}
-
-estimation_method1 <- c(0.34, 0.12, 1.23, 0.7, 1.75, .12)
-median_method1 <- median(estimation_method1)
-estimation_method2 <- c(0.91, 2.94, 2.14, 2.36, 2.86, 4.55)
-median_method2 <- median(estimation_method2)
-
-estimation_method3 <-  c(6.31, 8.37, 9.75, 6.09, 9.82, 7.24)
-median_method3 <- median(estimation_method3)
-
-estimation_method4 <- c(17.15, 11.82, 10.95, 17.2, 14.35, 16.82)
-median_method4 <- median(estimation_method4)
-
-estimation_method1_levene <- abs(estimation_method1 - median_method1)
-estimation_method2_levene <- abs(estimation_method2 - median_method2)
-estimation_method3_levene <- abs(estimation_method3 - median_method3)
-estimation_method4_levene <- abs(estimation_method4 - median_method4)
-
-obs <- c(estimation_method1_levene, estimation_method2_levene, estimation_method3_levene, estimation_method4_levene)
-
-estimation_method <- as.factor(sort(rep(seq(1, 4, 1), times = 6)))
-df <- data.frame(estimation_method, obs)
-df
-```
-
-Temos que o total de elemento por fator é 5. Vamos aplicar o teste F:
-
-A fórmula de F pode ser escrita como 
-$$F_{0} = \frac{MS_{treatments}}{MS_{E}}$$ onde $$MS_{treatments} = \frac{SS_{treatments}}{a-1}$$ e $$MS_{E} = \frac{SS_{E}}{N-a}$$, onde $a$ é o número de fatores, e N é o número total de observações.
-Além disso, $$SS_{e} = \sum_{i=1}^{a}\sum_{j=1}^{n}(y_{ij} - \bar{y_{..}})^{2}$$ e $$SS_{treatments} = n\sum_{i=1}^{a}(\bar{y_{i.}} - \bar{y_{..}})^{2}$$
- $y_{..}$ pode ser entendido como a soma geral de todos os valores, $y_{i.}$ a soma de todos os valores em determinado fator $i$, $n$ o total de elementos em cada fator.
- 
-```{r}
-plot(obs~estimation_method, data = df)
-```
-
-
-Através do `dplyr`, podemos utilizar funções que nos agilizam em retirar estatísticas referentes a cada um dos fatores.
-
-``` {r, warning = FALSE, message = FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(dplyr)
 
+power <- as.factor(sort(rep(seq(160, 220, 20), times = 5)))
+obs <- c(575, 542, 530, 539, 570, 565, 593, 590, 579, 610, 600, 651, 610, 637, 629, 725, 700, 715, 685, 710)
+length(power)
+df <- data.frame(obs, power)
+
 stat <- df %>%
-  group_by(estimation_method) %>%
+  group_by(power) %>%
   summarise(media = mean(obs),
             variancia = var(obs),
             total = sum(obs))
 stat
 
 ```
-O total de elemento por fator é $n=6$.
-
 ```{r}
-n <- 6
+n <- 5
 y__ <- sum(df$obs)
 y__mean <- y__/nrow(df)
 
 SS_treatments <- n*sum((stat$media - y__mean)^2)
-MS_treatments <- SS_treatments/3
 
 SS_t <- sum(df$obs^2) - ((sum(stat$total))^2)/nrow(df)
 
@@ -109,23 +61,96 @@ SS_e <- SS_t - SS_treatments
 
 MS_e <- SS_e/(nrow(df)-4)
 
-
-MS_treatments
 MS_e
 
+```
+Temos que nosso $MSE = 333,7$. 
 
+Na equação do erro padrão do contranste, $S_{c_{1}} = \sqrt{MSE\sum_{i=1}^{4}(\frac{c_{i1}^2}{n_{i}})}$, temos que cada valor de $c_{i1}^2$ e também $c_{i2}^2$, resultará em 1.
+
+Portanto, $S_{c_{1}} = \sqrt{333,7\frac{(1+1+1+1)}{5}} = 16,33891$ e $S_{c_{2}} = \sqrt{333,7\frac{(1+1)}{5}} = 11,55335$
+
+Temos, também, que calcular o valor crítico, o qual é dado por 
+
+$S_{\alpha, u} = S_{C_{u}} \sqrt{(a-1)F_{\alpha, a-1, N-a}}$.
+
+Para os dois casos, o valor dentro da raiz será o mesmo, o qual é de $(a-1)F_{\alpha, a-1, N-a} = (4-1)3,238872 = 9.716616$, considerando um nível de significância de $\alpha = 0,05$, e sua raiz é de 3.117149. Portanto, $S_{0,05, 1} = 16,33891*3.117149 = 50.93082$, o qual é o valor crítico para $C_{1}$, e $S_{0,05, 2} = 11,55335*3.117149 = 36.01351$, que é o valor crítico para $C_{2}$.
+
+
+
+Como $|C_{1}| > S_{0,05, 1}$, concluímos que o contraste 1 ($\Gamma_{1} = \mu_{1} + \mu_{2} - \mu_{3} - \mu_{4}$)não é igual a 0.
+Sobre o contraste 2 ($\Gamma_{2} = \mu_{1}-\mu_{4}$), $|C_{2}| > S_{0,05, 2}$, o que também indica que o contraste não é igual a 0.  
+*Obs:* Aqui, se está sendo usado um $\alpha = 0.05$
+
+
+
+## Tukey
+
+$T_{\alpha} = q_{\alpha}(a, f)\sqrt{\frac{MSE}{n}}$, 
+onde a é o número de grupos, f os graus de liberdade do erro quadrático médio, $q_{\alpha}(a, f)$ um valor tabelado.
+
+Temos que o grau de liberdade associado ao MSE é 16, logo, $f = 16$. Como temos tamanho de amostras iguais, teremos nossa estatística como
+
+$T_{0,05} = q_{0,05}(4, 16)\sqrt{\frac{333,7}{5}}=4,05*8.169455 = 33.08629$
+
+Com esse valor, conseguimos saber quais médias diferem entre si. Qualquer diferença entre dois valores que seja maiores que 33.08629, são significativamente diferentes.
+
+$\bar{y_{1.}} = 551,2$  
+$\bar{y_{2.}} = 587,4$  
+$\bar{y_{3.}} = 625,4$  
+$\bar{y_{4.}} = 707$  
+
+
+$\bar{y_{1.}} - \bar{y_{2.}} = -36.2$ (significativo)  
+$\bar{y_{1.}} - \bar{y_{3.}} = -74.2$ (significativo)  
+$\bar{y_{1.}} - \bar{y_{4.}} = -155.8$ (significativo)  
+$\bar{y_{2.}} - \bar{y_{3.}} = -38$ (significativo)  
+$\bar{y_{2.}} - \bar{y_{4.}} = -119.6$ (significativo)  
+$\bar{y_{3.}} - \bar{y_{4.}} = -81.6$ (significativo)  
+Portanto, todas as médias diferem entre sí.
+
+## Fisher Least SIgnificant Difference (LSD)
+
+O LSD terá a estatística  
+
+$LSD = t_{\frac{\alpha}{2}, N-a}\sqrt{\frac{2MSE}{n}}$
+
+Cujo qual se a diferença média dos fatores em absoluto for maior que essa estatística, as suas médias populacionais diferem.  
+
+$LSD = t_{0,025; 16}\sqrt{\frac{2*333,7}{5}} = 24,49$  
+As diferenças dois a dois já foram calculadas no exercício de Tukey. Logo, como todo os valores estão acima dessa estatística, rejeitamos que as médias $\mu_{i}$ e $\mu_{j}$ (todas, uma a uma) diferem.
+
+
+## Teste de Duncan
+
+$R_{m} = r_{m}*\sqrt{\frac{QMR}{r}}$
+onde $r_{m}$ é o valor da amplitude mínima estudentizada, obtida em tabela; $QMR$ quadrado médio do resíduo da ANOVA, e r o número de repetições em cada grupo, além de $m$, o qual é o número de médias.
+
+Primeiramente, precisaremos ordenar as médias em ordem crescente, as quais já estão ordenadas, como possível ver abaixo
+
+```{r}
+stat1 <- stat
+stat1 <- stat1[order(stat1$media, decreasing = TRUE),]
+stat1
 
 ```
-Portanto, $MS_{treatments} = 3.85656$ e $MS_{E} = 0.8441742$. 
 
-Do teste, $F_{0} = \frac{3.85656}{0.8441742} = 4.568441$
+```{r}
+anv <- aov(obs ~ power, data = df)
+summary(anv)
 
-Rejeitamos $H_{0}$ e concluímos que há evidências de que pelo menos uma das variâncias é diferente se 
+```
+Há 4 médias, logo, k = 4. Pela tabela acima, QMR = 334. r = 5.
 
-\begin{center}
-$F_{0} > F_{\alpha, a-1, N-a}$
-\end{center}
+$r_{m} = 3,297$ (tabela e considenrando nível de significância de 5\%).
 
-No nosso caso, $F_{\alpha, a-1, N-a} = F_{0.05, 3, 20} = 3.10$ 
+Por fim, é só jogar na fórmula:  
 
-Como $F_{0} = 4.568441 > F_{0.05, 3, 20} = 3.10$, rejeitamos a hipótese nula de que as variâncias são homogêneas. 
+$R_{4} = 3,297*\sqrt{\frac{334}{5}} = 26.9468$
+
+Como todas as diferenças são maiores que essa estatística, concluímos que há diferença significativa entre todas elas, uma a uma.
+
+## Conclusão
+
+Todas as médias diferem entre sí, em todos os testes, usando $\alpha = 5\%$
+
