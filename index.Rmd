@@ -1,7 +1,7 @@
 ---
 title: "Planejamento de Experimentos - I"
 author: "Gabriel Lopes Rubinho"
-date: '07-02-2024'
+date: '03-03-2024'
 lang: pt
 output: 
   html_document:
@@ -18,139 +18,61 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Comparações múltiplas - Exemplo 3.1
+# Blocos Randomizados - Exercício 4.1
 
-## Método de Scheffé
-
-Supondo que $\Gamma_{1} = \mu_{1} + \mu_{2} - \mu_{3} - \mu_{4}$ e $\Gamma_{2} = \mu_{1}-\mu_{4}$ sejam os contrastes de interesse.
-
-Os valores numéricos $C_{1} = \bar{y_{1.}} + \bar{y_{2.}}-\bar{y_{3.}}-\bar{y_{4.}}$ e $C_{2} = \bar{y_{1.}} - \bar{y_{4.}}$ são dados pela própria tabela, os quais nos resulta em 
-
-$C_{1} = 551,2 + 587,4 - 625,4 - 707 = -193,8$ e 
-$C_{2} = 551,2 - 707 = -155,8$
+4.1. A ANOVA de um experimento de blocos completos casualizados tem o resultado abaixo
 
 
-Precisaremos, primeiramente, calcular o MSE. 
+| Source | DF | SS | MS | F | P |
+|---------|:-----|------:|:------:|:------:|:------:|
+| Treatment      |   4 |   1010.56  |   ?   |   29.84   | ? |
+| Block     | ?  |  ? |   64.765  |    ? |  ? |
+| Error       |   20  |   169.33   |    ?   |       | |
+| Total       |   29  |   1503.71   |       |       | |
 
-```{r, message=FALSE, warning=FALSE}
-library(dplyr)
-
-power <- as.factor(sort(rep(seq(160, 220, 20), times = 5)))
-obs <- c(575, 542, 530, 539, 570, 565, 593, 590, 579, 610, 600, 651, 610, 637, 629, 725, 700, 715, 685, 710)
-length(power)
-df <- data.frame(obs, power)
-
-stat <- df %>%
-  group_by(power) %>%
-  summarise(media = mean(obs),
-            variancia = var(obs),
-            total = sum(obs))
-stat
-
-```
-```{r}
-n <- 5
-y__ <- sum(df$obs)
-y__mean <- y__/nrow(df)
-
-SS_treatments <- n*sum((stat$media - y__mean)^2)
-
-SS_t <- sum(df$obs^2) - ((sum(stat$total))^2)/nrow(df)
-
-SS_e <- SS_t - SS_treatments
-
-MS_e <- SS_e/(nrow(df)-4)
-
-MS_e
-
-```
-Temos que nosso $MSE = 333,7$. 
-
-Na equação do erro padrão do contranste, $S_{c_{1}} = \sqrt{MSE\sum_{i=1}^{4}(\frac{c_{i1}^2}{n_{i}})}$, temos que cada valor de $c_{i1}^2$ e também $c_{i2}^2$, resultará em 1.
-
-Portanto, $S_{c_{1}} = \sqrt{333,7\frac{(1+1+1+1)}{5}} = 16,33891$ e $S_{c_{2}} = \sqrt{333,7\frac{(1+1)}{5}} = 11,55335$
-
-Temos, também, que calcular o valor crítico, o qual é dado por 
-
-$S_{\alpha, u} = S_{C_{u}} \sqrt{(a-1)F_{\alpha, a-1, N-a}}$.
-
-Para os dois casos, o valor dentro da raiz será o mesmo, o qual é de $(a-1)F_{\alpha, a-1, N-a} = (4-1)3,238872 = 9.716616$, considerando um nível de significância de $\alpha = 0,05$, e sua raiz é de 3.117149. Portanto, $S_{0,05, 1} = 16,33891*3.117149 = 50.93082$, o qual é o valor crítico para $C_{1}$, e $S_{0,05, 2} = 11,55335*3.117149 = 36.01351$, que é o valor crítico para $C_{2}$.
+a. Preencha os espaços em branco. Você pode dar limites no valor-p.  
 
 
 
-Como $|C_{1}| > S_{0,05, 1}$, concluímos que o contraste 1 ($\Gamma_{1} = \mu_{1} + \mu_{2} - \mu_{3} - \mu_{4}$)não é igual a 0.
-Sobre o contraste 2 ($\Gamma_{2} = \mu_{1}-\mu_{4}$), $|C_{2}| > S_{0,05, 2}$, o que também indica que o contraste não é igual a 0.  
-*Obs:* Aqui, se está sendo usado um $\alpha = 0.05$
+Temos a seguinte equação: $SS{T} = SS_{Treatments} + SS_{Blocks} + SS_{E}$ (chamado de equação fundamental da ANOVA) onde $SS_{T}$ tem N-1 graus de liberdade(N é o número de observações), $SS_{Treatments}$ e $SS_{Blocks}$ têm a-1 e b-1 graus de liberdade (a é o número de tratamentos e b o número de blocos), e $SS_{E}$ (a-1)(b-1). Pela equação, $4 = a-1 \iff a = 5$; $20 = (5-1)(b-1) \iff b = 6$. Portanto, o número de graus de liberdade do `Block`, é $b-1 = 6-1 = 5$.  
+
+Pela equação fundamental da ANOVA, $1503.71 = 169.33 + SS_{Block} + 1010.56 \iff SS_{Block} = 1503.71 - 169.33 - 1010.56 = 323.82$.  
+
+$MS_{Treatment} = \frac{SS_{Treatment}}{a-1} = \frac{1010.56}{4} = 252.64$
+$MS_{E} = \frac{SS_{E}}{(b-1)(a-1)} = \frac{169.33}{20}=8.4665$  
+
+$F_{Block} = \frac{MS_{Block}}{MS_{E}} = \frac{64.765}{8.4665} = 7.64956$
+
+
+$P_{Treatment} = 3.544848e-08$  
+
+$P_{Block} = 0.0003688504$  
+
+(Feitos utilizando o comando `pf` do R).
+
+Portanto, a tabela ficará da seguinte forma:
+
+| Source | DF | SS | MS | F | P |
+|---------|:-----|------:|:------:|:------:|:------:|
+| Treatment      |   4 |   1010.56  |   252.64   |   29.84   |3.544848e-08  |
+| Block     | 5  |  323.82 |   64.765  |    7.64956 |  0.0003688504 |
+| Error       |   20  |   169.33   |    8.4665   |       | |
+| Total       |   29  |   1503.71   |       |       | |
 
 
 
-## Tukey
-
-$T_{\alpha} = q_{\alpha}(a, f)\sqrt{\frac{MSE}{n}}$, 
-onde a é o número de grupos, f os graus de liberdade do erro quadrático médio, $q_{\alpha}(a, f)$ um valor tabelado.
-
-Temos que o grau de liberdade associado ao MSE é 16, logo, $f = 16$. Como temos tamanho de amostras iguais, teremos nossa estatística como
-
-$T_{0,05} = q_{0,05}(4, 16)\sqrt{\frac{333,7}{5}}=4,05*8.169455 = 33.08629$
-
-Com esse valor, conseguimos saber quais médias diferem entre si. Qualquer diferença entre dois valores que seja maiores que 33.08629, são significativamente diferentes.
-
-$\bar{y_{1.}} = 551,2$  
-$\bar{y_{2.}} = 587,4$  
-$\bar{y_{3.}} = 625,4$  
-$\bar{y_{4.}} = 707$  
 
 
-$\bar{y_{1.}} - \bar{y_{2.}} = -36.2$ (significativo)  
-$\bar{y_{1.}} - \bar{y_{3.}} = -74.2$ (significativo)  
-$\bar{y_{1.}} - \bar{y_{4.}} = -155.8$ (significativo)  
-$\bar{y_{2.}} - \bar{y_{3.}} = -38$ (significativo)  
-$\bar{y_{2.}} - \bar{y_{4.}} = -119.6$ (significativo)  
-$\bar{y_{3.}} - \bar{y_{4.}} = -81.6$ (significativo)  
-Portanto, todas as médias diferem entre sí.
 
-## Fisher Least SIgnificant Difference (LSD)
+\newline
 
-O LSD terá a estatística  
+(b) Quantos blocos foram usados nesse experimento?
 
-$LSD = t_{\frac{\alpha}{2}, N-a}\sqrt{\frac{2MSE}{n}}$
-
-Cujo qual se a diferença média dos fatores em absoluto for maior que essa estatística, as suas médias populacionais diferem.  
-
-$LSD = t_{0,025; 16}\sqrt{\frac{2*333,7}{5}} = 24,49$  
-As diferenças dois a dois já foram calculadas no exercício de Tukey. Logo, como todo os valores estão acima dessa estatística, rejeitamos que as médias $\mu_{i}$ e $\mu_{j}$ (todas, uma a uma) diferem.
+Foram usados um total de b blocos. Como o número de graus de liberdade dos blocos é b-1, há um total de 6 blocos que foram utilizados.
 
 
-## Teste de Duncan
+(c) Que conclusões você pode ter?
 
-$R_{m} = r_{m}*\sqrt{\frac{QMR}{r}}$
-onde $r_{m}$ é o valor da amplitude mínima estudentizada, obtida em tabela; $QMR$ quadrado médio do resíduo da ANOVA, e r o número de repetições em cada grupo, além de $m$, o qual é o número de médias.
+É possível ter a conclusão de que há diferença significativa, tanto nos tratamentos, quanto nos blocos, pois o valor-p dos dois foi menor que 5\%. 
 
-Primeiramente, precisaremos ordenar as médias em ordem crescente, as quais já estão ordenadas, como possível ver abaixo
-
-```{r}
-stat1 <- stat
-stat1 <- stat1[order(stat1$media, decreasing = TRUE),]
-stat1
-
-```
-
-```{r}
-anv <- aov(obs ~ power, data = df)
-summary(anv)
-
-```
-Há 4 médias, logo, k = 4. Pela tabela acima, QMR = 334. r = 5.
-
-$r_{m} = 3,297$ (tabela e considenrando nível de significância de 5\%).
-
-Por fim, é só jogar na fórmula:  
-
-$R_{4} = 3,297*\sqrt{\frac{334}{5}} = 26.9468$
-
-Como todas as diferenças são maiores que essa estatística, concluímos que há diferença significativa entre todas elas, uma a uma.
-
-## Conclusão
-
-Todas as médias diferem entre sí, em todos os testes, usando $\alpha = 5\%$
 

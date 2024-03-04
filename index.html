@@ -1300,106 +1300,6 @@ ul.task-list{list-style: none;}
 
 
 
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ background-color: #f8f8f8; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } 
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.at { color: #204a87; } 
-code span.bn { color: #0000cf; } 
-code span.cf { color: #204a87; font-weight: bold; } 
-code span.ch { color: #4e9a06; } 
-code span.cn { color: #8f5902; } 
-code span.co { color: #8f5902; font-style: italic; } 
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.dt { color: #204a87; } 
-code span.dv { color: #0000cf; } 
-code span.er { color: #a40000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #0000cf; } 
-code span.fu { color: #204a87; font-weight: bold; } 
-code span.im { } 
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.kw { color: #204a87; font-weight: bold; } 
-code span.op { color: #ce5c00; font-weight: bold; } 
-code span.ot { color: #8f5902; } 
-code span.pp { color: #8f5902; font-style: italic; } 
-code span.sc { color: #ce5c00; font-weight: bold; } 
-code span.ss { color: #4e9a06; } 
-code span.st { color: #4e9a06; } 
-code span.va { color: #000000; } 
-code span.vs { color: #4e9a06; } 
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
 
 
 
@@ -1569,167 +1469,148 @@ font-size: 0.95em;
 
 <h1 class="title toc-ignore">Planejamento de Experimentos - I</h1>
 <h4 class="author">Gabriel Lopes Rubinho</h4>
-<h4 class="date">07-02-2024</h4>
+<h4 class="date">03-03-2024</h4>
 
 </div>
 
 
-<div id="comparações-múltiplas---exemplo-3.1" class="section level1">
-<h1>Comparações múltiplas - Exemplo 3.1</h1>
-<div id="método-de-scheffé" class="section level2">
-<h2>Método de Scheffé</h2>
-<p>Supondo que <span class="math inline">\(\Gamma_{1} = \mu_{1} +
-\mu_{2} - \mu_{3} - \mu_{4}\)</span> e <span class="math inline">\(\Gamma_{2} = \mu_{1}-\mu_{4}\)</span> sejam os
-contrastes de interesse.</p>
-<p>Os valores numéricos <span class="math inline">\(C_{1} = \bar{y_{1.}}
-+ \bar{y_{2.}}-\bar{y_{3.}}-\bar{y_{4.}}\)</span> e <span class="math inline">\(C_{2} = \bar{y_{1.}} - \bar{y_{4.}}\)</span> são
-dados pela própria tabela, os quais nos resulta em</p>
-<p><span class="math inline">\(C_{1} = 551,2 + 587,4 - 625,4 - 707 =
--193,8\)</span> e <span class="math inline">\(C_{2} = 551,2 - 707 =
--155,8\)</span></p>
-<p>Precisaremos, primeiramente, calcular o MSE.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>power <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">sort</span>(<span class="fu">rep</span>(<span class="fu">seq</span>(<span class="dv">160</span>, <span class="dv">220</span>, <span class="dv">20</span>), <span class="at">times =</span> <span class="dv">5</span>)))</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">575</span>, <span class="dv">542</span>, <span class="dv">530</span>, <span class="dv">539</span>, <span class="dv">570</span>, <span class="dv">565</span>, <span class="dv">593</span>, <span class="dv">590</span>, <span class="dv">579</span>, <span class="dv">610</span>, <span class="dv">600</span>, <span class="dv">651</span>, <span class="dv">610</span>, <span class="dv">637</span>, <span class="dv">629</span>, <span class="dv">725</span>, <span class="dv">700</span>, <span class="dv">715</span>, <span class="dv">685</span>, <span class="dv">710</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">length</span>(power)</span></code></pre></div>
-<pre><code>## [1] 20</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(obs, power)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>stat <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">group_by</span>(power) <span class="sc">%&gt;%</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(obs),</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>            <span class="at">variancia =</span> <span class="fu">var</span>(obs),</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>            <span class="at">total =</span> <span class="fu">sum</span>(obs))</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>stat</span></code></pre></div>
-<pre><code>## # A tibble: 4 x 4
-##   power media variancia total
-##   &lt;fct&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-## 1 160    551.      401.  2756
-## 2 180    587.      280.  2937
-## 3 200    625.      421.  3127
-## 4 220    707       232.  3535</code></pre>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>y__ <span class="ot">&lt;-</span> <span class="fu">sum</span>(df<span class="sc">$</span>obs)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>y__mean <span class="ot">&lt;-</span> y__<span class="sc">/</span><span class="fu">nrow</span>(df)</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>SS_treatments <span class="ot">&lt;-</span> n<span class="sc">*</span><span class="fu">sum</span>((stat<span class="sc">$</span>media <span class="sc">-</span> y__mean)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>SS_t <span class="ot">&lt;-</span> <span class="fu">sum</span>(df<span class="sc">$</span>obs<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> ((<span class="fu">sum</span>(stat<span class="sc">$</span>total))<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">nrow</span>(df)</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>SS_e <span class="ot">&lt;-</span> SS_t <span class="sc">-</span> SS_treatments</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>MS_e <span class="ot">&lt;-</span> SS_e<span class="sc">/</span>(<span class="fu">nrow</span>(df)<span class="sc">-</span><span class="dv">4</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>MS_e</span></code></pre></div>
-<pre><code>## [1] 333.7</code></pre>
-<p>Temos que nosso <span class="math inline">\(MSE = 333,7\)</span>.</p>
-<p>Na equação do erro padrão do contranste, <span class="math inline">\(S_{c_{1}} =
-\sqrt{MSE\sum_{i=1}^{4}(\frac{c_{i1}^2}{n_{i}})}\)</span>, temos que
-cada valor de <span class="math inline">\(c_{i1}^2\)</span> e também
-<span class="math inline">\(c_{i2}^2\)</span>, resultará em 1.</p>
-<p>Portanto, <span class="math inline">\(S_{c_{1}} =
-\sqrt{333,7\frac{(1+1+1+1)}{5}} = 16,33891\)</span> e <span class="math inline">\(S_{c_{2}} = \sqrt{333,7\frac{(1+1)}{5}} =
-11,55335\)</span></p>
-<p>Temos, também, que calcular o valor crítico, o qual é dado por</p>
-<p><span class="math inline">\(S_{\alpha, u} = S_{C_{u}}
-\sqrt{(a-1)F_{\alpha, a-1, N-a}}\)</span>.</p>
-<p>Para os dois casos, o valor dentro da raiz será o mesmo, o qual é de
-<span class="math inline">\((a-1)F_{\alpha, a-1, N-a} = (4-1)3,238872 =
-9.716616\)</span>, considerando um nível de significância de <span class="math inline">\(\alpha = 0,05\)</span>, e sua raiz é de 3.117149.
-Portanto, <span class="math inline">\(S_{0,05, 1} = 16,33891*3.117149 =
-50.93082\)</span>, o qual é o valor crítico para <span class="math inline">\(C_{1}\)</span>, e <span class="math inline">\(S_{0,05, 2} = 11,55335*3.117149 =
-36.01351\)</span>, que é o valor crítico para <span class="math inline">\(C_{2}\)</span>.</p>
-<p>Como <span class="math inline">\(|C_{1}| &gt; S_{0,05, 1}\)</span>,
-concluímos que o contraste 1 (<span class="math inline">\(\Gamma_{1} =
-\mu_{1} + \mu_{2} - \mu_{3} - \mu_{4}\)</span>)não é igual a 0. Sobre o
-contraste 2 (<span class="math inline">\(\Gamma_{2} =
-\mu_{1}-\mu_{4}\)</span>), <span class="math inline">\(|C_{2}| &gt;
-S_{0,05, 2}\)</span>, o que também indica que o contraste não é igual a
-0.<br />
-<em>Obs:</em> Aqui, se está sendo usado um <span class="math inline">\(\alpha = 0.05\)</span></p>
-</div>
-<div id="tukey" class="section level2">
-<h2>Tukey</h2>
-<p><span class="math inline">\(T_{\alpha} = q_{\alpha}(a,
-f)\sqrt{\frac{MSE}{n}}\)</span>, onde a é o número de grupos, f os graus
-de liberdade do erro quadrático médio, <span class="math inline">\(q_{\alpha}(a, f)\)</span> um valor tabelado.</p>
-<p>Temos que o grau de liberdade associado ao MSE é 16, logo, <span class="math inline">\(f = 16\)</span>. Como temos tamanho de amostras
-iguais, teremos nossa estatística como</p>
-<p><span class="math inline">\(T_{0,05} = q_{0,05}(4,
-16)\sqrt{\frac{333,7}{5}}=4,05*8.169455 = 33.08629\)</span></p>
-<p>Com esse valor, conseguimos saber quais médias diferem entre si.
-Qualquer diferença entre dois valores que seja maiores que 33.08629, são
-significativamente diferentes.</p>
-<p><span class="math inline">\(\bar{y_{1.}} = 551,2\)</span><br />
-<span class="math inline">\(\bar{y_{2.}} = 587,4\)</span><br />
-<span class="math inline">\(\bar{y_{3.}} = 625,4\)</span><br />
-<span class="math inline">\(\bar{y_{4.}} = 707\)</span></p>
-<p><span class="math inline">\(\bar{y_{1.}} - \bar{y_{2.}} =
--36.2\)</span> (significativo)<br />
-<span class="math inline">\(\bar{y_{1.}} - \bar{y_{3.}} = -74.2\)</span>
-(significativo)<br />
-<span class="math inline">\(\bar{y_{1.}} - \bar{y_{4.}} =
--155.8\)</span> (significativo)<br />
-<span class="math inline">\(\bar{y_{2.}} - \bar{y_{3.}} = -38\)</span>
-(significativo)<br />
-<span class="math inline">\(\bar{y_{2.}} - \bar{y_{4.}} =
--119.6\)</span> (significativo)<br />
-<span class="math inline">\(\bar{y_{3.}} - \bar{y_{4.}} = -81.6\)</span>
-(significativo)<br />
-Portanto, todas as médias diferem entre sí.</p>
-</div>
-<div id="fisher-least-significant-difference-lsd" class="section level2">
-<h2>Fisher Least SIgnificant Difference (LSD)</h2>
-<p>O LSD terá a estatística</p>
-<p><span class="math inline">\(LSD = t_{\frac{\alpha}{2},
-N-a}\sqrt{\frac{2MSE}{n}}\)</span></p>
-<p>Cujo qual se a diferença média dos fatores em absoluto for maior que
-essa estatística, as suas médias populacionais diferem.</p>
-<p><span class="math inline">\(LSD = t_{0,025;
-16}\sqrt{\frac{2*333,7}{5}} = 24,49\)</span><br />
-As diferenças dois a dois já foram calculadas no exercício de Tukey.
-Logo, como todo os valores estão acima dessa estatística, rejeitamos que
-as médias <span class="math inline">\(\mu_{i}\)</span> e <span class="math inline">\(\mu_{j}\)</span> (todas, uma a uma) diferem.</p>
-</div>
-<div id="teste-de-duncan" class="section level2">
-<h2>Teste de Duncan</h2>
-<p><span class="math inline">\(R_{m} =
-r_{m}*\sqrt{\frac{QMR}{r}}\)</span> onde <span class="math inline">\(r_{m}\)</span> é o valor da amplitude mínima
-estudentizada, obtida em tabela; <span class="math inline">\(QMR\)</span> quadrado médio do resíduo da ANOVA, e
-r o número de repetições em cada grupo, além de <span class="math inline">\(m\)</span>, o qual é o número de médias.</p>
-<p>Primeiramente, precisaremos ordenar as médias em ordem crescente, as
-quais já estão ordenadas, como possível ver abaixo</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>stat1 <span class="ot">&lt;-</span> stat</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>stat1 <span class="ot">&lt;-</span> stat1[<span class="fu">order</span>(stat1<span class="sc">$</span>media, <span class="at">decreasing =</span> <span class="cn">TRUE</span>),]</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>stat1</span></code></pre></div>
-<pre><code>## # A tibble: 4 x 4
-##   power media variancia total
-##   &lt;fct&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
-## 1 220    707       232.  3535
-## 2 200    625.      421.  3127
-## 3 180    587.      280.  2937
-## 4 160    551.      401.  2756</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>anv <span class="ot">&lt;-</span> <span class="fu">aov</span>(obs <span class="sc">~</span> power, <span class="at">data =</span> df)</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">summary</span>(anv)</span></code></pre></div>
-<pre><code>##             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-## power        3  66871   22290    66.8 2.88e-09 ***
-## Residuals   16   5339     334                     
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>Há 4 médias, logo, k = 4. Pela tabela acima, QMR = 334. r = 5.</p>
-<p><span class="math inline">\(r_{m} = 3,297\)</span> (tabela e
-considenrando nível de significância de 5%).</p>
-<p>Por fim, é só jogar na fórmula:</p>
-<p><span class="math inline">\(R_{4} = 3,297*\sqrt{\frac{334}{5}} =
-26.9468\)</span></p>
-<p>Como todas as diferenças são maiores que essa estatística, concluímos
-que há diferença significativa entre todas elas, uma a uma.</p>
-</div>
-<div id="conclusão" class="section level2">
-<h2>Conclusão</h2>
-<p>Todas as médias diferem entre sí, em todos os testes, usando <span class="math inline">\(\alpha = 5\%\)</span></p>
-</div>
+<div id="blocos-randomizados---exercício-4.1" class="section level1">
+<h1>Blocos Randomizados - Exercício 4.1</h1>
+<p>4.1. A ANOVA de um experimento de blocos completos casualizados tem o
+resultado abaixo</p>
+<table>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th align="left">DF</th>
+<th align="right">SS</th>
+<th align="center">MS</th>
+<th align="center">F</th>
+<th align="center">P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Treatment</td>
+<td align="left">4</td>
+<td align="right">1010.56</td>
+<td align="center">?</td>
+<td align="center">29.84</td>
+<td align="center">?</td>
+</tr>
+<tr class="even">
+<td>Block</td>
+<td align="left">?</td>
+<td align="right">?</td>
+<td align="center">64.765</td>
+<td align="center">?</td>
+<td align="center">?</td>
+</tr>
+<tr class="odd">
+<td>Error</td>
+<td align="left">20</td>
+<td align="right">169.33</td>
+<td align="center">?</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>Total</td>
+<td align="left">29</td>
+<td align="right">1503.71</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-alpha">
+<li>Preencha os espaços em branco. Você pode dar limites no
+valor-p. </li>
+</ol>
+<p>Temos a seguinte equação: <span class="math inline">\(SS{T} =
+SS_{Treatments} + SS_{Blocks} + SS_{E}\)</span> (chamado de equação
+fundamental da ANOVA) onde <span class="math inline">\(SS_{T}\)</span>
+tem N-1 graus de liberdade(N é o número de observações), <span class="math inline">\(SS_{Treatments}\)</span> e <span class="math inline">\(SS_{Blocks}\)</span> têm a-1 e b-1 graus de
+liberdade (a é o número de tratamentos e b o número de blocos), e <span class="math inline">\(SS_{E}\)</span> (a-1)(b-1). Pela equação, <span class="math inline">\(4 = a-1 \iff a = 5\)</span>; <span class="math inline">\(20 = (5-1)(b-1) \iff b = 6\)</span>. Portanto, o
+número de graus de liberdade do <code>Block</code>, é <span class="math inline">\(b-1 = 6-1 = 5\)</span>.</p>
+<p>Pela equação fundamental da ANOVA, <span class="math inline">\(1503.71 = 169.33 + SS_{Block} + 1010.56 \iff
+SS_{Block} = 1503.71 - 169.33 - 1010.56 = 323.82\)</span>.</p>
+<p><span class="math inline">\(MS_{Treatment} =
+\frac{SS_{Treatment}}{a-1} = \frac{1010.56}{4} = 252.64\)</span> <span class="math inline">\(MS_{E} = \frac{SS_{E}}{(b-1)(a-1)} =
+\frac{169.33}{20}=8.4665\)</span></p>
+<p><span class="math inline">\(F_{Block} = \frac{MS_{Block}}{MS_{E}} =
+\frac{64.765}{8.4665} = 7.64956\)</span></p>
+<p><span class="math inline">\(P_{Treatment} = 3.544848e-08\)</span></p>
+<p><span class="math inline">\(P_{Block} = 0.0003688504\)</span></p>
+<p>(Feitos utilizando o comando <code>pf</code> do R).</p>
+<p>Portanto, a tabela ficará da seguinte forma:</p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="13%" />
+<col width="15%" />
+<col width="17%" />
+<col width="17%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th align="left">DF</th>
+<th align="right">SS</th>
+<th align="center">MS</th>
+<th align="center">F</th>
+<th align="center">P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Treatment</td>
+<td align="left">4</td>
+<td align="right">1010.56</td>
+<td align="center">252.64</td>
+<td align="center">29.84</td>
+<td align="center">3.544848e-08</td>
+</tr>
+<tr class="even">
+<td>Block</td>
+<td align="left">5</td>
+<td align="right">323.82</td>
+<td align="center">64.765</td>
+<td align="center">7.64956</td>
+<td align="center">0.0003688504</td>
+</tr>
+<tr class="odd">
+<td>Error</td>
+<td align="left">20</td>
+<td align="right">169.33</td>
+<td align="center">8.4665</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td>Total</td>
+<td align="left">29</td>
+<td align="right">1503.71</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Quantos blocos foram usados nesse experimento?</li>
+</ol>
+<p>Foram usados um total de b blocos. Como o número de graus de
+liberdade dos blocos é b-1, há um total de 6 blocos que foram
+utilizados.</p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Que conclusões você pode ter?</li>
+</ol>
+<p>É possível ter a conclusão de que há diferença significativa, tanto
+nos tratamentos, quanto nos blocos, pois o valor-p dos dois foi menor
+que 5%.</p>
 </div>
 
 
